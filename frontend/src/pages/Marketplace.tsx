@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ShoppingCart, Zap, MapPin, Calendar, Filter } from 'lucide-react'
+import { purchaseEnergy } from '../services/api'
 
 // Mock data for demonstration
 const mockListings = [
@@ -41,6 +42,24 @@ const mockListings = [
 export default function Marketplace() {
   const [selectedSource, setSelectedSource] = useState<string>('all')
   const [listings] = useState(mockListings)
+  const [purchasing, setPurchasing] = useState<string | null>(null)
+
+  const handlePurchase = async (listingId: string, amount: number) => {
+    try {
+      setPurchasing(listingId)
+      const result = await purchaseEnergy({
+        listingId,
+        amount,
+        buyerAddress: '0x66B2136CcF9D61399359c56b0dDB3247AC54dDC46' // Your wallet
+      })
+      
+      alert(`✅ Purchase successful!\n\nPurchase ID: ${result.purchaseId}\nEnergy: ${result.energyAmount} kWh\nCost: ${result.totalCost} ETH\nTransaction: ${result.txHash}`)
+    } catch (error: any) {
+      alert(`❌ Purchase failed: ${error.message}`)
+    } finally {
+      setPurchasing(null)
+    }
+  }
 
   const filteredListings = selectedSource === 'all' 
     ? listings 
@@ -138,9 +157,13 @@ export default function Marketplace() {
                   <span>{listing.location}</span>
                 </div>
 
-                <div className="flex items-center text-gray-400 text-sm">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  <span>Produced: {new Date(listing.productionDate).toLocaleDateString()}</span>
+                <div cla
+                  onClick={() => handlePurchase(listing.id, listing.energyAmount)}
+                  disabled={purchasing === listing.id}
+                  className="w-full btn-primary flex items-center justify-center space-x-2 disabled:opacity-50"
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  <span>{purchasing === listing.id ? 'Processing...' : 'Purchase Energy'}Date(listing.productionDate).toLocaleDateString()}</span>
                 </div>
               </div>
 
