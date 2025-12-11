@@ -147,3 +147,18 @@ class EnergyTradingAPI {
 
 export const api = new EnergyTradingAPI();
 export default api;
+// Export individual methods for easier imports
+export const { 
+  healthCheck,
+  registerSeller, 
+  getAllSellers, 
+  getSellerByAddress, 
+  getSellerStats,
+  createListing,
+  getAllListings,
+  getSellerListings,
+  cancelListing,
+  purchaseEnergy,
+  getPurchaseHistory,
+  getMarketStatistics
+} = api;
