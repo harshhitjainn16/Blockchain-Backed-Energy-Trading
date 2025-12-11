@@ -1,0 +1,46 @@
+{
+  "name": "blockchain-energy-trading",
+  "version": "1.0.0",
+  "description": "Blockchain-backed peer-to-peer energy trading platform",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "api": "ts-node src/api/server.ts",
+    "api:dev": "nodemon --watch src --exec ts-node src/api/server.ts",
+    "frontend": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build",
+    "start:all": "concurrently \"npm run api:dev\" \"npm run frontend\"",
+    "build": "tsc",
+    "verify": "ts-node scripts/verify-deployment.ts",
+    "check-setup": "ts-node scripts/check-setup.ts",
+    "test:connection": "ts-node scripts/test-connection.ts",
+    "register-seller": "ts-node src/examples/register-seller.ts",
+    "create-listing": "ts-node src/examples/create-listing.ts",
+    "purchase-energy": "ts-node src/examples/purchase-energy.ts"
+  },
+  "keywords": [
+    "blockchain",
+    "energy",
+    "trading",
+    "story-protocol"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@story-protocol/core-sdk": "^1.0.0",
+    "viem": "^2.0.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "typescript": "^5.3.2",
+    "ts-node": "^10.9.1",
+    "nodemon": "^3.0.2",
+    "concurrently": "^8.2.2",
+    "axios": "^1.6.2"
+  }
+}
