@@ -147,18 +147,17 @@ class EnergyTradingAPI {
 
 export const api = new EnergyTradingAPI();
 export default api;
-// Export individual methods for easier imports
-export const { 
-  healthCheck,
-  registerSeller, 
-  getAllSellers, 
-  getSellerByAddress, 
-  getSellerStats,
-  createListing,
-  getAllListings,
-  getSellerListings,
-  cancelListing,
-  purchaseEnergy,
-  getPurchaseHistory,
-  getMarketStatistics
-} = api;
+
+// Export individual methods with proper binding
+export const healthCheck = api.healthCheck.bind(api);
+export const registerSeller = api.registerSeller.bind(api);
+export const getAllSellers = api.getAllSellers.bind(api);
+export const getSellerByAddress = api.getSellerByAddress.bind(api);
+export const getSellerStats = api.getSellerStats.bind(api);
+export const createListing = api.createListing.bind(api);
+export const getAllListings = api.getAllListings.bind(api);
+export const getSellerListings = api.getSellerListings.bind(api);
+export const cancelListing = api.cancelListing.bind(api);
+export const purchaseEnergy = api.purchaseEnergy.bind(api);
+export const getPurchaseHistory = api.getPurchaseHistory.bind(api);
+export const getMarketStatistics = api.getMarketStatistics.bind(api);
