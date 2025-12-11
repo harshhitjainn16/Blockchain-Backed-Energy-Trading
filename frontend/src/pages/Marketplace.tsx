@@ -157,13 +157,9 @@ export default function Marketplace() {
                   <span>{listing.location}</span>
                 </div>
 
-                <div cla
-                  onClick={() => handlePurchase(listing.id, listing.energyAmount)}
-                  disabled={purchasing === listing.id}
-                  className="w-full btn-primary flex items-center justify-center space-x-2 disabled:opacity-50"
-                >
-                  <ShoppingCart className="w-4 h-4" />
-                  <span>{purchasing === listing.id ? 'Processing...' : 'Purchase Energy'}Date(listing.productionDate).toLocaleDateString()}</span>
+                <div className="flex items-center text-gray-400 text-sm">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  <span>Produced: {new Date(listing.productionDate).toLocaleDateString()}</span>
                 </div>
               </div>
 
@@ -179,9 +175,13 @@ export default function Marketplace() {
                   </div>
                 </div>
 
-                <button className="w-full btn-primary flex items-center justify-center space-x-2">
+                <button 
+                  onClick={() => handlePurchase(listing.id, listing.energyAmount)}
+                  disabled={purchasing === listing.id}
+                  className="w-full btn-primary flex items-center justify-center space-x-2 disabled:opacity-50"
+                >
                   <ShoppingCart className="w-4 h-4" />
-                  <span>Purchase Energy</span>
+                  <span>{purchasing === listing.id ? 'Processing...' : 'Purchase Energy'}</span>
                 </button>
               </div>
             </div>
