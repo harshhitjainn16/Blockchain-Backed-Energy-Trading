@@ -1,9 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ShoppingCart, Zap, MapPin, Calendar, Filter } from 'lucide-react'
-import { purchaseEnergy } from '../services/api'
+import { purchaseEnergy, getAllListings } from '../services/api'
 
-// Mock data for demonstration
-const mockListings = [
+interface Listing {
+  id: string;
+  seller: string;
+  sellerName: string;
+  energyAmount: number;
+  pricePerKwh: string;
+  location: string;
+  energySource: string;
+  productionDate: string;
+  totalValue: string;
+}
+
+// Mock data for fallback
+const mockListings: Listing[] = [
   {
     id: '1',
     seller: '0x1234...5678',
@@ -41,8 +53,42 @@ const mockListings = [
 
 export default function Marketplace() {
   const [selectedSource, setSelectedSource] = useState<string>('all')
-  const [listings] = useState(mockListings)
+  const [listings, setListings] = useState<Listing[]>([])
   const [purchasing, setPurchasing] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  // Fetch real listings from backend
+  useEffect(() => {
+    loadListings()
+  }, [])
+
+  const loadListings = async () => {
+    try {
+      setLoading(true)
+      const data = await getAllListings()
+      
+      // Transform backend data to frontend format
+      const transformedListings = (data as any[]).map((listing: any) => ({
+        id: listing.listingId,
+        seller: listing.sellerAddress,
+        sellerName: listing.sellerName || 'Anonymous Seller',
+        energyAmount: listing.energyAmount,
+        pricePerKwh: listing.pricePerKwh,
+        location: listing.location,
+        energySource: listing.energySource,
+        productionDate: listing.productionDate,
+        totalValue: listing.totalValue
+      }))
+      
+      setListings(transformedListings)
+    } catch (error) {
+      console.error('Failed to load listings:', error)
+      // Fallback to mock data if backend fails
+      setListings(mockListings)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handlePurchase = async (listingId: string, amount: number) => {
     try {
@@ -50,15 +96,29 @@ export default function Marketplace() {
       const result = await purchaseEnergy({
         listingId,
         amount,
-        buyerAddress: '0x66B2136CcF9D61399359c56b0dDB3247AC54dDC46' // Your wallet
+        buyerAddress: '0x66B2136CcF9D61399359c56b0dDB3247AC54dDC46'
       })
       
-      alert(`✅ Purchase successful!\n\nPurchase ID: ${result.purchaseId}\nEnergy: ${result.energyAmount} kWh\nCost: ${result.totalCost} ETH\nTransaction: ${result.txHash}`)
+      alert(`✅ Purchase successful!\n\nPurchase ID: ${(result as any).purchaseId}\nEnergy: ${(result as any).energyAmount} kWh\nCost: ${(result as any).totalCost} ETH\nTransaction: ${(result as any).txHash}`)
+      
+      // Reload listings after purchase
+      await loadListings()
     } catch (error: any) {
       alert(`❌ Purchase failed: ${error.message}`)
     } finally {
       setPurchasing(null)
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading marketplace...</p>
+        </div>
+      </div>
+    )
   }
 
   const filteredListings = selectedSource === 'all' 

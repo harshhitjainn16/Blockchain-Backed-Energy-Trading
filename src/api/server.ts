@@ -17,6 +17,54 @@ app.use(express.json());
 const sellerService = new SellerService();
 const tradingService = new TradingService(sellerService);
 
+// Initialize with test data
+async function initializeTestData() {
+  try {
+    console.log('📦 Initializing test data...');
+    
+    // Register seller
+    await sellerService.registerSeller({
+      name: "Green Solar Home",
+      location: "San Francisco, CA",
+      solarCapacity: 20,
+      certifications: ["ISO 50001"],
+      description: "Community solar energy provider"
+    });
+    
+    // Create listings
+    await tradingService.createListing({
+      amount: 50,
+      pricePerKwh: "0.00001",
+      energySource: "solar",
+      location: "San Francisco, CA",
+      productionDate: "2025-12-10",
+      certificateUri: "ipfs://certificate-1"
+    });
+    
+    await tradingService.createListing({
+      amount: 75,
+      pricePerKwh: "0.00002",
+      energySource: "solar",
+      location: "Los Angeles, CA",
+      productionDate: "2025-12-11",
+      certificateUri: "ipfs://certificate-2"
+    });
+    
+    await tradingService.createListing({
+      amount: 100,
+      pricePerKwh: "0.000015",
+      energySource: "solar",
+      location: "Austin, TX",
+      productionDate: "2025-12-09",
+      certificateUri: "ipfs://certificate-3"
+    });
+    
+    console.log('✅ Test data initialized successfully\n');
+  } catch (error) {
+    console.error('⚠️  Warning: Could not initialize test data:', error);
+  }
+}
+
 // Health check
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', message: 'Energy Trading API is running' });
@@ -172,13 +220,16 @@ app.get('/api/stats/market', async (req: Request, res: Response) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`\n🚀 Energy Trading API Server`);
   console.log(`================================`);
   console.log(`✅ Server running on port ${PORT}`);
   console.log(`📍 API: http://localhost:${PORT}/api`);
   console.log(`🏥 Health: http://localhost:${PORT}/api/health`);
   console.log(`================================\n`);
+  
+  // Initialize test data
+  await initializeTestData();
 });
 
 export default app;

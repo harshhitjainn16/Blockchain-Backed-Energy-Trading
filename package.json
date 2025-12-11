@@ -10,6 +10,7 @@
     "frontend": "cd frontend && npm run dev",
     "frontend:build": "cd frontend && npm run build",
     "start:all": "concurrently \"npm run api:dev\" \"npm run frontend\"",
+    "seed": "ts-node src/scripts/seed-listings.ts",
     "build": "tsc",
     "verify": "ts-node scripts/verify-deployment.ts",
     "check-setup": "ts-node scripts/check-setup.ts",
